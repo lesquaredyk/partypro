@@ -15,20 +15,29 @@ type Booking = {
   status: "Pending" | "Confirmed" | "Completed" | "Cancelled";
 };
 
+// ✅ ADDED: status validator
+const VALID_STATUS = ["Pending", "Confirmed", "Completed", "Cancelled"] as const;
+
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filter, setFilter] = useState<
     "All" | "Pending" | "Confirmed" | "Completed" | "Cancelled"
   >("All");
 
-  // ✅ LOAD FROM LOCALSTORAGE
   useEffect(() => {
     const stored =
       JSON.parse(localStorage.getItem("partypro_bookings") || "[]");
-    setBookings(stored);
+
+    // ✅ ADDED: normalize status
+    const normalized = stored.map((b: any) => ({
+      ...b,
+      status: VALID_STATUS.includes(b.status) ? b.status : "Pending",
+    }));
+
+    setBookings(normalized);
+    localStorage.setItem("partypro_bookings", JSON.stringify(normalized));
   }, []);
 
-  // ✅ UPDATE STATUS FUNCTION
   const updateStatus = (id: number, newStatus: Booking["status"]) => {
     const updated = bookings.map((b) =>
       b.id === id ? { ...b, status: newStatus } : b
@@ -76,7 +85,14 @@ export default function BookingsPage() {
             </Link>
 
             <div className="rounded-xl px-4 py-3 text-white/90">Calendar</div>
-            <div className="rounded-xl px-4 py-3 text-white/90">POS / Sales</div>
+
+            <Link
+              href="/pos"
+              className="block rounded-xl px-4 py-3 text-white/90 hover:bg-white/10"
+            >
+              POS / Sales
+            </Link>
+
             <div className="rounded-xl px-4 py-3 text-white/90">Forecasting</div>
           </nav>
         </div>
@@ -122,8 +138,8 @@ export default function BookingsPage() {
         {/* LIST */}
         <div className="rounded-2xl bg-white p-6 shadow-sm min-h-[200px] flex items-center justify-center">
           {filteredBookings.length === 0 ? (
-            <p className="text-gray-400">
-              No {filter.toLowerCase()} bookings
+            <p className="text-xs text-gray-600 font-medium">
+              No bookings yet
             </p>
           ) : (
             <div className="w-full space-y-3">
@@ -132,48 +148,64 @@ export default function BookingsPage() {
                   key={b.id}
                   className="flex justify-between items-center border p-4 rounded-xl"
                 >
+                  
+                  {/* LEFT SIDE */}
                   <div>
-                    <p className="font-medium">{b.name}</p>
-                    <p className="text-sm text-gray-500">{b.date}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-semibold text-[#1f2a44]">{b.name}</p>
+
+                      {/* ✅ STATUS BADGE (ADDED STYLE) */}
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium
+                          ${b.status === "Pending" && "bg-yellow-100 text-yellow-700"}
+                          ${b.status === "Confirmed" && "bg-green-100 text-green-700"}
+                          ${b.status === "Completed" && "bg-blue-100 text-blue-700"}
+                          ${b.status === "Cancelled" && "bg-red-100 text-red-700"}
+                        `}
+                      >
+                        {b.status}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-gray-600">{b.date}</p>
                     <p className="text-xs text-gray-400">
                       {b.package} • {b.eventType}
                     </p>
                   </div>
 
+                  {/* RIGHT SIDE */}
                   <div className="flex items-center gap-2">
 
-                    {/* STATUS */}
-                    <span className="text-sm font-medium mr-2">
-                      {b.status}
-                    </span>
-
-                    {/* ACTIONS */}
+                    {/* PENDING */}
                     {b.status === "Pending" && (
                       <>
                         <button
                           onClick={() => updateStatus(b.id, "Confirmed")}
-                          className="text-xs bg-green-500 text-white px-2 py-1 rounded"
+                          className="text-xs bg-green-500 text-white px-3 py-1 rounded-md"
                         >
                           Confirm
                         </button>
                         <button
                           onClick={() => updateStatus(b.id, "Cancelled")}
-                          className="text-xs bg-red-500 text-white px-2 py-1 rounded"
+                          className="text-xs bg-red-400 text-white px-3 py-1 rounded-md"
                         >
                           Cancel
                         </button>
                       </>
                     )}
 
+                    {/* CONFIRMED */}
                     {b.status === "Confirmed" && (
                       <button
                         onClick={() => updateStatus(b.id, "Completed")}
-                        className="text-xs bg-blue-500 text-white px-2 py-1 rounded"
+                        className="text-xs bg-blue-500 text-white px-3 py-1 rounded-md"
                       >
                         Complete
                       </button>
                     )}
+
                   </div>
+
                 </div>
               ))}
             </div>

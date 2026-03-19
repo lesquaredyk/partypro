@@ -39,7 +39,7 @@ export default function AdminDashboard() {
 
   // ✅ ADDED total bookings
   const totalBookings = bookings.length;
-
+  
   return (
     <div className="min-h-screen flex bg-[#f5f6f8]">
       
@@ -70,7 +70,12 @@ export default function AdminDashboard() {
             </Link>
 
             <div className="rounded-xl px-4 py-3 text-white/90">Calendar</div>
-            <div className="rounded-xl px-4 py-3 text-white/90">POS / Sales</div>
+            <Link
+              href="/pos"
+              className="block rounded-xl px-4 py-3 text-white/90 hover:bg-white/10"
+            >
+              POS / Sales
+            </Link>
             <div className="rounded-xl px-4 py-3 text-white/90">Forecasting</div>
           </nav>
         </div>
@@ -182,8 +187,14 @@ export default function AdminDashboard() {
             ) : (
               <div className="mt-3 space-y-2">
                 {bookings.slice(0, 3).map((b) => (
-                  <div key={b.id} className="text-sm">
-                    📅 {b.date} — {b.name}
+                  <div
+                    key={b.id}
+                    className="flex items-center gap-2 text-sm text-[#1f2a44] font-medium"
+                  >
+                    <span className="text-purple-500">📅</span>
+                    <span>{b.date}</span>
+                    <span className="text-gray-400">—</span>
+                    <span className="font-semibold">{b.name}</span>
                   </div>
                 ))}
               </div>

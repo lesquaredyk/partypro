@@ -152,9 +152,12 @@ export default function InventoryPage() {
               Calendar
             </div>
 
-            <div className="rounded-xl px-4 py-3 text-white/90 hover:bg-white/10">
-              POS / Sales
-            </div>
+          <Link
+            href="/pos"
+            className="block rounded-xl px-4 py-3 text-white/90 hover:bg-white/10"
+          >
+            POS / Sales
+          </Link>
 
             <div className="rounded-xl px-4 py-3 text-white/90 hover:bg-white/10">
               Forecasting
@@ -208,7 +211,9 @@ export default function InventoryPage() {
 
         {/* CATEGORIES */}
         <section className="mb-6 rounded-2xl bg-white p-6">
-          <h2 className="mb-3 font-semibold">Categories</h2>
+          <h2 className="mb-3 font-semibold text-[#1f2a44]">
+            Categories
+          </h2>
           <div className="flex flex-wrap gap-2">
             {categories.map((c) => (
               <span
@@ -224,7 +229,9 @@ export default function InventoryPage() {
         {/* PRODUCTS TABLE */}
         <section className="rounded-2xl bg-white p-6">
           <div className="flex justify-between mb-4">
-            <h2 className="font-semibold">Products</h2>
+            <h2 className="font-semibold text-[#1f2a44]">
+              Products
+            </h2>
 
             <input
               placeholder="Search products..."
@@ -235,7 +242,7 @@ export default function InventoryPage() {
           </div>
 
           <table className="w-full text-sm">
-            <thead className="text-gray-400 text-xs uppercase">
+            <thead className="text-gray-600 text-xs uppercase">
               <tr>
                 <th className="text-left">Product</th>
                 <th>Category</th>
@@ -252,13 +259,13 @@ export default function InventoryPage() {
               {filteredProducts.map((p) => {
                 const s = getStatus(p);
                 return (
-                  <tr key={p.id} className="border-t">
-                    <td className="py-3">{p.name}</td>
-                    <td className="text-center">{p.category}</td>
-                    <td className="text-center">{p.stock}</td>
-                    <td className="text-center">{p.alertLevel}</td>
-                    <td className="text-center">₱{p.originalPrice.toFixed(2)}</td>
-                    <td className="text-center">₱{p.salesPrice.toFixed(2)}</td>
+                    <tr key={p.id} className="border-t">
+                    <td className="py-3 text-[#1f2a44] font-medium">{p.name}</td>
+                    <td className="text-center text-gray-700">{p.category}</td>
+                    <td className="text-center text-gray-700">{p.stock}</td>
+                    <td className="text-center text-gray-700">{p.alertLevel}</td>
+                    <td className="text-center text-gray-700">₱{p.originalPrice.toFixed(2)}</td>
+                    <td className="text-center text-gray-700">₱{p.salesPrice.toFixed(2)}</td>
                     <td className="text-center">
                       <span className={`px-2 py-1 rounded-full text-xs ${s.style}`}>
                         {s.label}
@@ -334,7 +341,7 @@ export default function InventoryPage() {
 
                     <div className="space-y-2 max-h-40 overflow-auto">
                       {categories.map((c) => (
-                        <div key={c} className="flex justify-between bg-gray-100 p-2 rounded">
+                        <div key={c} className="flex justify-between bg-gray-300 p-2 rounded">
                           {c}
                           <button onClick={() =>
                             setManualCategories((p) =>
